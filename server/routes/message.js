@@ -7,6 +7,6 @@ router.post("/create",controllers.createMessage);
 
 router.get("/id/:id", controllers.findMessageById);
 
-router.patch("/edit/:id", controllers.editMessageById);
+router.patch("/edit/:message_id", controllers.editMessageById);
 
 export default router;

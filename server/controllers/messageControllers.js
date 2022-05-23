@@ -34,17 +34,26 @@ export const findMessageById = async (req, res) => {
 
 export const editMessageById = async (req, res) => {
   try {
-    const { id } = req.params.id;
+    const { message_id } = req.params;
     const { user_id, content } = req.body;
-    const message = await Message.findOne(id);
+    const message = await Message.findOne({ _id: message_id });
+
     if (!message) return res.status(404).json({ message: "Message not found" });
-    if (user_id !== message.user_id.ObjectId){
-      console.log(message.user_id);
-      console.log(user_id)
+    if (user_id !== message.user_id.toString()) {
+      console.log(message.user_id.toString());
+      console.log(user_id);
       return res.status(400).json({ message: "user id does not match" });
     }
-     
-    await Message.findByIdAndUpdate(id, { content });
+    console.log(req.params);
+  
+
+    await Message.findByIdAndUpdate(
+      message_id,
+      { content: content, ["dates.last_edited"]:Date.now() },
+      { new: true, runValidators: true }
+    );
+    console.log(content);
+
     return res.status(200).json({ message: "Message was updated" });
   } catch (error) {
     return res
